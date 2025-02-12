@@ -6,6 +6,7 @@ import com.example.bankApi.BankConfigurations.Verification.repositories.Verifica
 import com.example.bankApi.User.Enums.UserRole;
 import com.example.bankApi.User.models.UserModel;
 import com.example.bankApi.User.repositories.UserRepository;
+import com.example.bankApi.User.services.AccountService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,10 +20,7 @@ public class VerificationService {
     private final UserRepository userRepository;
     private final TokenService tokenService;
 
-    public VerificationService(VerificationCodeRepository repository,
-                               UserRepository userRepository,
-                               TokenService tokenService) {
-
+    public VerificationService(VerificationCodeRepository repository, UserRepository userRepository, TokenService tokenService) {
         this.repository = repository;
         this.userRepository = userRepository;
         this.tokenService = tokenService;
