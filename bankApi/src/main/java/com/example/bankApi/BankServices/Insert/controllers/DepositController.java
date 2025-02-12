@@ -1,6 +1,5 @@
 package com.example.bankApi.BankServices.Insert.controllers;
 
-import com.example.bankApi.BankConfigurations.MicroServices.producer.EmailProducer;
 import com.example.bankApi.BankConfigurations.MicroServices.producer.TypeProducer;
 import com.example.bankApi.BankServices.Insert.dto.InsertDTO;
 import com.example.bankApi.BankServices.Insert.models.InsertModel;
@@ -13,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("allMyDeposit-service")
-public class InsertController {
+@RequestMapping("deposit-service")
+public class DepositController {
 
     private final InsertService service;
     private final AccountService accountService;
     private final TypeProducer producer;
 
-    public InsertController(InsertService service, AccountService accountService, TypeProducer producer) {
+    public DepositController(InsertService service, AccountService accountService, TypeProducer producer) {
         this.service = service;
         this.accountService = accountService;
         this.producer = producer;

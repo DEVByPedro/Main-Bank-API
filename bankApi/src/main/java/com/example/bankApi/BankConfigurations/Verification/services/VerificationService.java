@@ -34,10 +34,8 @@ public class VerificationService {
 
     public String isCodeAvailable(UserModel model) {
 
-        var searchForCode = repository.findByReceiverId(model.getId());
-
-        if (searchForCode.isPresent()) {
-            deleteCodeById(searchForCode.get().getVerificationCodeId());
+        if (repository.findByReceiverId(model.getId()).isPresent()) {
+            deleteCodeById(repository.findByReceiverId(model.getId()).get().getVerificationCodeId());
         }
 
         return generateCode(model);

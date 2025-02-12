@@ -71,9 +71,9 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody @Valid RegisterDTO data) {
-        return accountService.findByLogin(data.username()).<ResponseEntity<Object>>
+        return accountService.findByDocument(data.username()).<ResponseEntity<Object>>
                         map(account -> ResponseEntity.badRequest()
-                        .body("User: " + data.username() + "\nhas already been registered!"))
+                        .body("The document " + data.document() + "\nhas already been registered!"))
                         .orElseGet(() -> ResponseEntity.ok(createData(data)));
     }
 

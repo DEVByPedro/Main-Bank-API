@@ -1,5 +1,7 @@
 package com.example.bankApi.User.services;
 
+import com.example.bankApi.BankConfigurations.Verification.repositories.VerificationCodeRepository;
+import com.example.bankApi.BankConfigurations.Verification.services.VerificationService;
 import com.example.bankApi.BankServices.transactions.models.TransactionModel;
 import com.example.bankApi.User.models.UserModel;
 import com.example.bankApi.BankConfigurations.MicroServices.producer.EmailProducer;
@@ -18,14 +20,17 @@ public class AccountService {
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
     private final EmailProducer emailProducer;
+    private final VerificationCodeRepository codeRepository;
 
-    public AccountService(TransactionRepository transactionRepository,
-                          UserRepository userRepository,
-                          EmailProducer emailProducer) {
+    public AccountService(UserRepository userRepository,
+                          TransactionRepository transactionRepository,
+                          EmailProducer emailProducer,
+                          VerificationCodeRepository codeRepository) {
 
         this.userRepository = userRepository;
         this.transactionRepository = transactionRepository;
         this.emailProducer = emailProducer;
+        this.codeRepository = codeRepository;
     }
 
     public boolean validateTransaction(BigDecimal balance, BigDecimal value) {
@@ -39,8 +44,6 @@ public class AccountService {
         }
         return userModel;
     }
-
-
 
     public TransactionModel saveTransaction(TransactionModel transactionModel) { return this.transactionRepository.save(transactionModel); }
 
