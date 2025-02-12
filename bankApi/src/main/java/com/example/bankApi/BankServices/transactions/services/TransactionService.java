@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class TransactionService {
@@ -46,7 +47,8 @@ public class TransactionService {
             throw new RuntimeException("Transaction not allowed.");
         }
 
-        TransactionModel transactionModel = new TransactionModel(null, null, null, null, null, null, null);
+        TransactionModel transactionModel = new TransactionModel();
+        transactionModel.setTransactionId(UUID.randomUUID());
         transactionModel.setSenderDocument(data.senderDocument());
         transactionModel.setSenderName(accountService.findByDocument(data.senderDocument()).get().getUsername());
         transactionModel.setReceiverDocument(data.receiverDocument());

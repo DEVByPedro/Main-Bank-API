@@ -13,7 +13,7 @@ import java.util.ArrayList;
 @Service
 public class AuthorizationService implements UserDetailsService {
 
-    AccountService accountService;
+    private final AccountService accountService;
 
     public AuthorizationService(AccountService accountService) {
         this.accountService = accountService;

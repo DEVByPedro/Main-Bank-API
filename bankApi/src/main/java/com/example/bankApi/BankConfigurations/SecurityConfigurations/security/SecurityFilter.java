@@ -34,7 +34,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if (login != null) {
             UserModel userModel = accountService.findByLogin(login)
-                    .orElseThrow(() -> new RuntimeException("Error: User not found"));
+                    .orElseThrow(() -> new RuntimeException("Error: User not found or the key is duplicated"));
 
             var authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_"+userModel.getRole().toString()));
             var authentication = new UsernamePasswordAuthenticationToken(userModel, null, authorities);

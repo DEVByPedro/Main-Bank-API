@@ -39,7 +39,10 @@ public class UserController {
         this.verificationService = verificationService;
     }
 
-    // METHODS
+    /** METHODS
+     *  Used as a help when creating / manipulating DATA.
+     *  Also acts as a Shortcut.
+     */
 
     public UserModel createData(RegisterDTO data) {
         UserModel userModel = new UserModel();
@@ -50,16 +53,19 @@ public class UserController {
     }
 
     public UserModel updateUserData(RegisterDTO data) {
-        var userFound = accountService.findByDocument(data.document());
-        var user = userFound.get();
+        var userFound = accountService.findByDocument(data.document()).get();
 
-        BeanUtils.copyProperties(data, user);
-        user.setPassword(passwordEncoder.encode(data.password()));
+        BeanUtils.copyProperties(data, userFound);
+        userFound.setPassword(passwordEncoder.encode(data.password()));
 
-        return accountService.save(user, false);
+        return accountService.save(userFound, false);
     }
 
-    // POST MAPPING
+    /**
+     * POST MAPPING :
+     * Checks if the data defined in Postman exists in database.
+     * Used as a JSON file.
+     */
 
     @PostMapping("/login")
     public ResponseEntity<Object> postUser(@RequestBody @Valid UserDTO data) {
@@ -69,6 +75,12 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
+    /**
+     * POST MAPPING :
+     * inserts data defined in Postman into database.
+     * Used as a JSON file.
+     */
+
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody @Valid RegisterDTO data) {
         return accountService.findByDocument(data.document()).<ResponseEntity<Object>>
@@ -77,7 +89,9 @@ public class UserController {
                         .orElseGet(() -> ResponseEntity.ok(createData(data)));
     }
 
-    // PUT MAPPING
+    /** PUT MAPPING :
+     *  Updates a UserModel, finding it by it's document, since document is unique.
+     */
 
     @PutMapping("/updateData={document}")
     public ResponseEntity<Object> updateData(@PathVariable(value = "document") String document, @RequestBody @Valid RegisterDTO data) {
@@ -86,12 +100,19 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    // GET MAPPING
+    /** GET MAPPING :
+     * Returns a List of all UserModels from database.
+     */
 
     @GetMapping("/getAllUsers")
-    public List<UserModel> getOne() {
+    public List<UserModel> getAll() {
         return accountService.getAll();
     }
+
+    /**
+     * GET MAPPING : Returns a UserModel
+     * finds it by Document, since document is unique.
+     */
 
     @GetMapping("/getUser={document}")
     public ResponseEntity<Object> getOne(@PathVariable(value = "document") String document) {
@@ -100,15 +121,16 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.badRequest().body("No user with document: " + document + " has been founded."));
     }
 
-    // DELETE MAPPING
+    /** DELETE MAPPING :
+     * Deletes data from database by Postman, using document as index since it's unique.
+     */
 
-    @DeleteMapping("/deleteUser={document}")
+    @DeleteMapping("/deleteUser/{document}")
     public ResponseEntity<Object> deleteOne(@PathVariable(value = "document") String document) {
         return accountService.findByDocument(document).<ResponseEntity<Object>>
                 map(account -> ResponseEntity.status(HttpStatus.OK)
-                        .body("User: " + accountService.findByDocument(document).get().getUsername() + "\nhas been deleted with success." +
+                        .body("User: " + accountService.findByDocument(document) + "\nhas been deleted with success." +
                                 accountService.deleteByDocument(document)))
-
                 .orElseGet(() -> ResponseEntity.badRequest()
                         .body("No user with document: " + document + "\nhas been founded."));
     }

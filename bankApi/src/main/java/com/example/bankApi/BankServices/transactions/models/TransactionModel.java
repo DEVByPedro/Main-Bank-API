@@ -5,14 +5,14 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "TB_TRANSACTIONS")
 public class TransactionModel implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Long transactionId;
+    private UUID transactionId;
     private String senderDocument;
     private String senderName;
     private String receiverDocument;
@@ -23,7 +23,7 @@ public class TransactionModel implements Serializable {
     public TransactionModel() {
     }
 
-    public TransactionModel(Long transactionId,
+    public TransactionModel(UUID transactionId,
                             String senderDocument,
                             String senderName,
                             String receiverDocument,
@@ -40,11 +40,11 @@ public class TransactionModel implements Serializable {
         this.timeStamp = timeStamp;
     }
 
-    public Long getTransactionId() {
+    public UUID getTransactionId() {
         return transactionId;
     }
 
-    public void setTransactionId(Long transactionId) {
+    public void setTransactionId(UUID transactionId) {
         this.transactionId = transactionId;
     }
 

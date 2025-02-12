@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Component
 public class TransactionProducer {
@@ -45,13 +46,17 @@ public class TransactionProducer {
                 .getBalance()
                 .subtract(transactionModel.getValue());
 
-        String message = userSettings.getFirstName(sender.getUsername()) +
-                ", your transaction has been made successfully! \n" +
-                "You sent: R$"+ transactionModel.getValue() +
-                " \nTo: " + receiver.getUsername()+
+
+        String message = userSettings.getFirstName(sender.getUsername()).toUpperCase() +
+                ", your transaction has been made successfully! \n\n" +
+                "You've SENT: R$"+ transactionModel.getValue() +
+                " \n\nTo : " + receiver.getUsername().toUpperCase()+
                 " (CPF: "+ settings.format(receiver.getDocument()) +").\n" +
                 "Your current balance is now: "+ balanceSettings.format(senderBalance)+"\n" +
-                "Thanks for using our bank!";
+                "\nTransaction ID:  "+ transactionModel.getTransactionId() + "\n" +
+                "Occured at: "+ LocalDateTime.now()  +
+                "\nHaven't sent any money? Contact Us.\n"+
+                "\nThanks for using our bank!";
 
         email.setUserId(sender.getId());
         email.setEmailTo(sender.getEmail());
@@ -74,17 +79,17 @@ public class TransactionProducer {
 
         String message = userSettings.getFirstName(receiver.getUsername()) +
                 ", your transaction has been made successfully! \n" +
-                "You received: R$"+ transactionModel.getValue() +
+                "You RECEIVED: R$"+ transactionModel.getValue() +
                 " \nFrom: " + sender.getUsername()+
                 "(CPF:"+ settings.format(sender.getDocument()) +").\n" +
-                "Your current balance is now: "+ balanceSettings.format(receiverBalance) +"\n" +
-                "Transaction ID: "+transactionModel.getTransactionId() +"\n" +
+                "Your current balance is now: R$"+ balanceSettings.format(receiverBalance) +"\n" +
+                "\nTransaction ID:  "+ transactionModel.getTransactionId() + "\n"+
                 "Occured at: "+ LocalDateTime.now() + "\n" +
                 "Thanks for using our bank!";
 
         email.setUserId(receiver.getId());
         email.setEmailTo(receiver.getEmail());
-        email.setSubject("Transaction made successfully!");
+        email.setSubject("Money has Arrived!");
         email.setText(message);
 
         rabbitTemplate.convertAndSend("", routingKey, email);

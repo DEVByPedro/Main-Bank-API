@@ -21,8 +21,20 @@ public class EmailProducer {
     private final VerificationCodeRepository verificationCodeRepository;
     private final UserSettings userSettings;
 
-    public EmailProducer(RabbitTemplate rabbitTemplate, TokenService tokenService, VerificationService verificationService,
-                         VerificationCodeRepository verificationCodeRepository, UserSettings userSettings) {
+    /**
+     * Constructor of Email Producer:
+     * @param rabbitTemplate
+     * @param tokenService
+     * @param verificationService
+     * @param verificationCodeRepository
+     * @param userSettings
+     */
+
+    public EmailProducer(RabbitTemplate rabbitTemplate,
+                         TokenService tokenService,
+                         VerificationService verificationService,
+                         VerificationCodeRepository verificationCodeRepository,
+                         UserSettings userSettings) {
 
         this.rabbitTemplate = rabbitTemplate;
         this.tokenService = tokenService;
@@ -31,8 +43,16 @@ public class EmailProducer {
         this.userSettings = userSettings;
     }
 
+    /**
+     * Gets email Address
+     */
     @Value("${broker.queue.email.name}")
     private String routingKey;
+
+    /**
+     * Service for publishing email to it's destinatary,
+     * creates the emailModel and then convert and send.
+     */
 
     public void publishEmailMessage(UserModel userModel) {
         var email = new EmailDTO();
@@ -47,6 +67,10 @@ public class EmailProducer {
         rabbitTemplate.convertAndSend("", routingKey, email);
     }
 
+    /**
+     * Publishes the verification code generated to it's destinatary
+     */
+
     public String publishTwoStepCode(UserModel userModel) {
 
         UUID userId = userModel.getId();
@@ -57,13 +81,12 @@ public class EmailProducer {
         email.setEmailTo(userModel.getEmail());
         email.setSubject("2-Steps Verification Code");
         email.setText(userSettings.getFirstName(userModel.getUsername())+
-                ", Here is your Two-Steps Verification Code: \n\n"+
+                userModel.getUsername()+", your Two-Steps steps verification code has arrived! \n\n               "+
                 code.get().getVerificationCode());
 
         rabbitTemplate.convertAndSend("", routingKey, email);
 
         return "";
     }
-
 
 }
